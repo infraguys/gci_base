@@ -1,0 +1,34 @@
+# Build section. It specifies the build process of the project
+build:
+  
+  # Dependencies of the project
+  deps:
+    - dst: /opt/gci_base
+      # Local path
+      path:
+        src: ../../gci_base
+    # For local development and testing take 
+    # Genesis Core from the local machine.
+    - dst: /opt/genesis_core
+      optional: true
+      path:
+        env: LOCAL_GENESIS_CORE_PATH
+  
+  # List of elements in the project
+  elements:
+    # List of images in the element
+    - images:
+      - name: genesis-base
+        format: qcow2
+        envs:
+          - GEN_USER_PASSWD
+        
+        # OS profile for the image
+        profile: ubuntu_24
+
+        # Provisioning script
+        script: images/genesis_base/install_genesis_base.sh
+        
+        # Override image build parameters, for instance Packer parameters
+        override:
+          disk_size: "5G"
