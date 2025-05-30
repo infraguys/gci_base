@@ -1,0 +1,28 @@
+name: build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  Build:
+    runs-on: self-hosted
+    strategy:
+      fail-fast: true
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build Genesis Core
+        run: |
+          set -eux
+
+          genesis build $(pwd)
+
+          # Temporary upload step is done in the build script
+          VERSION="$(genesis get-version .)"
+          ELEMENT_PATH="/var/lib/repository/genesis-base"
+
+          rm -fr "${ELEMENT_PATH}/${VERSION}"
+          mkdir -p "${ELEMENT_PATH}/${VERSION}"
+          mv output/genesis-base.qcow2 "${ELEMENT_PATH}/${VERSION}/"
+          cd ${ELEMENT_PATH}/${VERSION}/ && \
+            sha256sum genesis-base.qcow2 >> ${ELEMENT_PATH}/${VERSION}/SHA256SUMS
