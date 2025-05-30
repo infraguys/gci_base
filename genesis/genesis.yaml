@@ -7,13 +7,13 @@ build:
       # Local path
       path:
         src: ../../gci_base
-    # For local development and testing take 
-    # Genesis Core from the local machine.
-    - dst: /opt/genesis_core
+
+    # Take SDK from a local path for development purposes.
+    - dst: /opt/gcl_sdk
       optional: true
       path:
-        env: LOCAL_GENESIS_CORE_PATH
-  
+        env: LOCAL_GENESIS_SDK_PATH
+
   # List of elements in the project
   elements:
     # List of images in the element
