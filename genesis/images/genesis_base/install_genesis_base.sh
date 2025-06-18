@@ -20,55 +20,51 @@ set -eu
 set -x
 set -o pipefail
 
-GC_PATH="/opt/genesis_core"
+SDK_PATH="/opt/gcl_sdk"
 IMG_ARTS_PATH="/opt/gci_base/genesis/images/genesis_base"
 WORK_DIR="/var/lib/genesis"
 SYSTEMD_SERVICE_DIR=/etc/systemd/system/
 
 PASSWD="${GEN_USER_PASSWD:-ubuntu}"
-DEV_MODE=$([ -d "$GC_PATH" ] && echo "true" || echo "false")
+DEV_MODE=$([ -d "$SDK_PATH" ] && echo "true" || echo "false")
 
 # Install packages
 sudo apt update
 
-# We only need the package `libvirt-dev` since Genesis Core is not divided
-# into multiple packages. It's not a big problem so far. About 7Mb addtional
-# space and some time to install.
 sudo apt install -y build-essential python3.12-dev python3.12-venv \
-    cloud-guest-utils irqbalance qemu-guest-agent libev-dev \
-    libvirt-dev 
+    cloud-guest-utils irqbalance qemu-guest-agent libev-dev 
 
 # Install the Core Agent
 # Prepare a fresh virtrual environment
-rm -fr "$GC_PATH/.venv"
-mkdir -p "$GC_PATH/.venv"
-python3 -m venv "$GC_PATH/.venv"
-source "$GC_PATH"/.venv/bin/activate
+rm -fr "$SDK_PATH/.venv"
+mkdir -p "$SDK_PATH/.venv"
+python3 -m venv "$SDK_PATH/.venv"
+source "$SDK_PATH"/.venv/bin/activate
 pip install pip --upgrade
 
 # In the dev mode the genesis_core package is installed from the local machine
 if [[ "$DEV_MODE" == "true" ]]; then
-    pip install -r "$GC_PATH"/requirements.txt
-    pip install -e "$GC_PATH"
+    pip install -r "$SDK_PATH"/requirements.txt
+    pip install -e "$SDK_PATH"
 # Install the Core Agent as a package from pypi
 else
-    pip install genesis-core
+    pip install gcl-sdk
 fi
 
-sudo cp -r "$IMG_ARTS_PATH/genesis_core_agent" /etc/
-sudo ln -sf "$GC_PATH/.venv/bin/gc-agent" "/usr/bin/gc-agent"
+sudo cp -r "$IMG_ARTS_PATH/etc/genesis_universal_agent" /etc/
+sudo ln -sf "$SDK_PATH/.venv/bin/genesis-universal-agent" "/usr/bin/genesis-universal-agent"
 
 
 # Install stuff for bootstrap procedure and systemd services
 sudo mkdir -p "$WORK_DIR/bootstrap/scripts/"
 sudo cp "$IMG_ARTS_PATH/bootstrap.sh" "$WORK_DIR/bootstrap/"
 sudo cp "$IMG_ARTS_PATH/root_autoresize.sh" "/usr/bin/"
-sudo cp "$IMG_ARTS_PATH/genesis-bootstrap.service" $SYSTEMD_SERVICE_DIR
-sudo cp "$IMG_ARTS_PATH/genesis-root-autoresize.service" $SYSTEMD_SERVICE_DIR
-sudo cp "$IMG_ARTS_PATH/gc-agent.service" $SYSTEMD_SERVICE_DIR
+sudo cp "$IMG_ARTS_PATH/etc/systemd/genesis-bootstrap.service" $SYSTEMD_SERVICE_DIR
+sudo cp "$IMG_ARTS_PATH/etc/systemd/genesis-root-autoresize.service" $SYSTEMD_SERVICE_DIR
+sudo cp "$IMG_ARTS_PATH/etc/systemd/genesis-universal-agent.service" $SYSTEMD_SERVICE_DIR
 
 # Enable genesis core services
-sudo systemctl enable genesis-bootstrap genesis-root-autoresize gc-agent
+sudo systemctl enable genesis-bootstrap genesis-root-autoresize genesis-universal-agent
 
 # Set default password
 cat > /tmp/__passwd <<EOF
