@@ -25,13 +25,18 @@ IMG_ARTS_PATH="/opt/gci_base/genesis/images/genesis_base"
 WORK_DIR="/var/lib/genesis"
 SYSTEMD_SERVICE_DIR=/etc/systemd/system/
 
+# Observability and monitoring tools
+PROMTAIL_VERSION="3.4.4"
+PROMTAIL_BUILD_DIR="/tmp/promtail"
+
 PASSWD="${GEN_USER_PASSWD:-ubuntu}"
 DEV_MODE=$([ -d "$SDK_PATH" ] && echo "true" || echo "false")
 
 # Install packages
-sudo apt update
+apt update && apt dist-upgrade -y
 
-sudo apt install -y build-essential python3.12-dev python3.12-venv \
+
+apt install -y build-essential python3.12-dev python3.12-venv \
     cloud-guest-utils irqbalance qemu-guest-agent libev-dev 
 
 # Install the Core Agent
@@ -51,28 +56,39 @@ else
     pip install gcl-sdk
 fi
 
-sudo cp -r "$IMG_ARTS_PATH/etc/genesis_universal_agent" /etc/
-sudo ln -sf "$SDK_PATH/.venv/bin/genesis-universal-agent" "/usr/bin/genesis-universal-agent"
+cp -r "$IMG_ARTS_PATH/etc/genesis_universal_agent" /etc/
+ln -sf "$SDK_PATH/.venv/bin/genesis-universal-agent" "/usr/bin/genesis-universal-agent"
 
 
 # Install stuff for bootstrap procedure and systemd services
-sudo mkdir -p "$WORK_DIR/bootstrap/scripts/"
-sudo cp "$IMG_ARTS_PATH/bootstrap.sh" "$WORK_DIR/bootstrap/"
-sudo cp "$IMG_ARTS_PATH/root_autoresize.sh" "/usr/bin/"
-sudo cp "$IMG_ARTS_PATH/etc/systemd/genesis-bootstrap.service" $SYSTEMD_SERVICE_DIR
-sudo cp "$IMG_ARTS_PATH/etc/systemd/genesis-root-autoresize.service" $SYSTEMD_SERVICE_DIR
-sudo cp "$IMG_ARTS_PATH/etc/systemd/genesis-universal-agent.service" $SYSTEMD_SERVICE_DIR
+mkdir -p "$WORK_DIR/bootstrap/scripts/"
+cp "$IMG_ARTS_PATH/bootstrap.sh" "$WORK_DIR/bootstrap/"
+cp "$IMG_ARTS_PATH/root_autoresize.sh" "/usr/bin/"
+cp "$IMG_ARTS_PATH/etc/systemd/genesis-bootstrap.service" $SYSTEMD_SERVICE_DIR
+cp "$IMG_ARTS_PATH/etc/systemd/genesis-root-autoresize.service" $SYSTEMD_SERVICE_DIR
+cp "$IMG_ARTS_PATH/etc/systemd/genesis-universal-agent.service" $SYSTEMD_SERVICE_DIR
 
 # Enable genesis core services
-sudo systemctl enable genesis-bootstrap genesis-root-autoresize genesis-universal-agent
+systemctl enable genesis-bootstrap genesis-root-autoresize genesis-universal-agent
+
+# Install Observability Agents
+mkdir -p "$PROMTAIL_BUILD_DIR"
+cd "$PROMTAIL_BUILD_DIR"
+
+wget -q "https://github.com/grafana/loki/releases/download/v${PROMTAIL_VERSION}/promtail_${PROMTAIL_VERSION}_amd64.deb"
+dpkg -i "promtail_${PROMTAIL_VERSION}_amd64.deb"
+usermod -aG adm promtail
+
+systemctl enable promtail.service
 
 # Set default password
 cat > /tmp/__passwd <<EOF
 ubuntu:$PASSWD
 EOF
 
-sudo chpasswd < /tmp/__passwd
+chpasswd < /tmp/__passwd
 rm -f /tmp/__passwd
 
 # Cleanup
-sudo rm -fr /opt/gci_base
+rm -fr /opt/gci_base
+rm -rf "$PROMTAIL_BUILD_DIR"
