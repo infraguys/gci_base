@@ -28,6 +28,9 @@ SYSTEMD_SERVICE_DIR=/etc/systemd/system/
 PASSWD="${GEN_USER_PASSWD:-ubuntu}"
 DEV_MODE=$([ -d "$SDK_PATH" ] && echo "true" || echo "false")
 
+# Metrics and logs
+ALLOY_VERSION="1.10.0"
+
 # Install packages
 sudo apt update
 
@@ -65,6 +68,11 @@ sudo cp "$IMG_ARTS_PATH/etc/systemd/genesis-universal-agent.service" $SYSTEMD_SE
 
 # Enable genesis core services
 sudo systemctl enable genesis-bootstrap genesis-root-autoresize genesis-universal-agent
+
+# Install Alloy
+wget -q https://github.com/grafana/alloy/releases/download/v${ALLOY_VERSION}/alloy-${ALLOY_VERSION}-1.amd64.deb
+sudo dpkg -i alloy-${ALLOY_VERSION}-1.amd64.deb
+rm -f alloy-${ALLOY_VERSION}-1.amd64.deb
 
 # Set default password
 cat > /tmp/__passwd <<EOF
