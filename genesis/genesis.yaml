@@ -22,12 +22,13 @@ build:
         format: qcow2
         envs:
           - GEN_USER_PASSWD
+          - GEN_SDK_VERSION=0.5.1
         
         # OS profile for the image
         profile: ubuntu_24
 
         # Provisioning script
-        script: images/genesis_base/install_genesis_base.sh
+        script: images/genesis_base/install.sh
         
         # Override image build parameters, for instance Packer parameters
         override:
