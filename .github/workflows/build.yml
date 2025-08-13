@@ -15,6 +15,10 @@ jobs:
         run: |
           set -eux
 
+          # Install DevTools
+          rm -fr .venv && python3 -m venv .venv
+          source .venv/bin/activate
+          pip install genesis-devtools
           genesis build $(pwd)
 
           # Temporary upload step is done in the build script
