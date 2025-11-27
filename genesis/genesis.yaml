@@ -32,4 +32,4 @@ build:
         
         # Override image build parameters, for instance Packer parameters
         override:
-          disk_size: "5G"
+          disk_size: "6G"
