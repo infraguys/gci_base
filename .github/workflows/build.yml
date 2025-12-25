@@ -2,7 +2,11 @@ name: build
 
 on:
   push:
-  pull_request:
+  workflow_dispatch:
+
+env:
+  PROJECT_NAME: genesis-base
+  REPO_ENDPOINT_PUT: http://10.20.0.1:8082
 
 jobs:
   Build:
@@ -10,7 +14,9 @@ jobs:
     strategy:
       fail-fast: true
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 30
       - name: Build Genesis Core
         run: |
           set -eux
@@ -23,10 +29,24 @@ jobs:
 
           # Temporary upload step is done in the build script
           VERSION="$(genesis get-version .)"
-          ELEMENT_PATH="/var/lib/repository/genesis-base"
 
-          rm -fr "${ELEMENT_PATH}/${VERSION}"
-          mkdir -p "${ELEMENT_PATH}/${VERSION}"
-          mv output/genesis-base.qcow2 "${ELEMENT_PATH}/${VERSION}/"
-          cd ${ELEMENT_PATH}/${VERSION}/ && \
-            sha256sum genesis-base.qcow2 >> ${ELEMENT_PATH}/${VERSION}/SHA256SUMS
+          # Prepare `raw` and `raw.gz` images
+          cd output
+          qemu-img convert -f qcow2 genesis-base.qcow2 -O raw genesis-base.raw
+          gzip -5 -k < genesis-base.raw > genesis-base.raw.gz
+
+          # Upload the VM images
+          curl -X PUT --upload-file genesis-base.qcow2 \
+            ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/${VERSION}/genesis-base.qcow2
+          curl -X PUT --upload-file genesis-base.raw.gz \
+            ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/${VERSION}/genesis-base.raw.gz
+          curl -X PUT --upload-file genesis-base.raw \
+            ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/${VERSION}/genesis-base.raw
+
+          sha256sum genesis-base.qcow2 >> SHA256SUMS
+          sha256sum genesis-base.raw.gz >> SHA256SUMS
+          sha256sum genesis-base.raw >> SHA256SUMS
+
+          curl -X PUT --upload-file SHA256SUMS \
+            ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/${VERSION}/SHA256SUMS
+          cd -
