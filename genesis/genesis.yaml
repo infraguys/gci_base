@@ -22,7 +22,7 @@ build:
         format: qcow2
         envs:
           - GEN_USER_PASSWD
-          - GEN_SDK_VERSION=0.11.2
+          - GEN_SDK_VERSION=2.0.0
         
         # OS profile for the image
         profile: ubuntu_24
