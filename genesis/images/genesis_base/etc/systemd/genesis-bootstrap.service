@@ -6,7 +6,6 @@ ConditionPathExists=!/var/lib/genesis/bootstrap/__done
 
 [Service]
 Type=oneshot
-PrivateTmp=true
 ExecStart=/var/lib/genesis/bootstrap/bootstrap.sh
 WorkingDirectory=/var/lib/genesis/bootstrap
 
