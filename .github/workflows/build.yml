@@ -4,7 +4,7 @@ on:
   push:
   workflow_dispatch:
   schedule:
-    - cron: '0 1 * * *'
+    - cron: '0 1 * * 0'
 
 env:
   PROJECT_NAME: genesis-base
@@ -22,11 +22,16 @@ jobs:
       - name: Build Genesis Core
         run: |
           set -eux
-
+          
+          # Install uv
+          wget -qO- https://astral.sh/uv/install.sh | sh
+          source $HOME/.local/bin/env
+          uv tool install tox --with tox-uv 
+          
           # Install DevTools
-          rm -fr .venv && python3 -m venv .venv
+          rm -fr .venv && uv venv
           source .venv/bin/activate
-          pip install genesis-devtools
+          uv pip install genesis-devtools
           genesis build $(pwd)
 
           # Temporary upload step is done in the build script
