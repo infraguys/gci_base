@@ -36,7 +36,7 @@ ALLOY_VERSION="1.10.0"
 sudo apt update
 
 sudo apt install -y build-essential python3.12-dev python3.12-venv \
-    cloud-guest-utils irqbalance qemu-guest-agent libev-dev 
+    cloud-guest-utils irqbalance qemu-guest-agent libev-dev rsync parted j2cli
 
 # Install the Core Agent
 # Prepare a fresh virtrual environment
@@ -66,6 +66,8 @@ sudo cp "$IMG_ARTS_PATH/root_autoresize.sh" "/usr/bin/"
 sudo cp "$IMG_ARTS_PATH/etc/systemd/genesis-bootstrap.service" $SYSTEMD_SERVICE_DIR
 sudo cp "$IMG_ARTS_PATH/etc/systemd/genesis-root-autoresize.service" $SYSTEMD_SERVICE_DIR
 sudo cp "$IMG_ARTS_PATH/etc/systemd/genesis-universal-agent.service" $SYSTEMD_SERVICE_DIR
+sudo mkdir "/usr/local/lib/genesis/"
+sudo cp -a "$IMG_ARTS_PATH/lib/." "/usr/local/lib/genesis/"
 
 # Enable genesis core services
 sudo systemctl enable genesis-bootstrap genesis-root-autoresize genesis-universal-agent
@@ -85,3 +87,7 @@ rm -f /tmp/__passwd
 
 # Cleanup
 sudo rm -fr /opt/gci_base
+sudo apt-get clean
+sudo rm -rf /var/lib/apt/lists/*
+sudo rm -rf /tmp/*
+fstrim -v /
