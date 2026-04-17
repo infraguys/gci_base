@@ -36,7 +36,7 @@ ALLOY_VERSION="1.10.0"
 sudo apt update
 
 sudo apt install -y build-essential python3.12-dev python3.12-venv \
-    cloud-guest-utils irqbalance qemu-guest-agent libev-dev 
+    cloud-guest-utils irqbalance qemu-guest-agent libev-dev
 
 # Install the Core Agent
 # Prepare a fresh virtrual environment
@@ -85,3 +85,7 @@ rm -f /tmp/__passwd
 
 # Cleanup
 sudo rm -fr /opt/gci_base
+sudo apt-get clean
+sudo rm -rf /var/lib/apt/lists/*
+sudo rm -rf /tmp/*
+fstrim -v /
