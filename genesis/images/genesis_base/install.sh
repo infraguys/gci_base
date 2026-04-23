@@ -38,6 +38,10 @@ sudo apt update
 sudo apt install -y build-essential python3.12-dev python3.12-venv \
     cloud-guest-utils irqbalance qemu-guest-agent libev-dev rsync parted j2cli
 
+export UV_INSTALLER_GHE_BASE_URL=https://github.com
+curl -LsSf https://github.com/astral-sh/uv/releases/download/0.11.7/uv-installer.sh | sh
+source "$HOME"/.local/bin/env
+
 # Install the Core Agent
 # Prepare a fresh virtrual environment
 rm -fr "$AGENT_PATH/.venv"
