@@ -39,11 +39,12 @@ sudo apt install -y build-essential python3.12-dev python3.12-venv \
     cloud-guest-utils irqbalance qemu-guest-agent libev-dev rsync parted j2cli
 
 export UV_INSTALLER_GHE_BASE_URL=https://github.com
+export UV_INSTALL_DIR="/usr/local/bin"
 curl -LsSf https://github.com/astral-sh/uv/releases/download/0.11.7/uv-installer.sh | sh
-source "$HOME"/.local/bin/env
+uv self version
 
 # Install the Core Agent
-# Prepare a fresh virtrual environment
+# Prepare a fresh virtual environment
 rm -fr "$AGENT_PATH/.venv"
 mkdir -p "$AGENT_PATH/.venv"
 python3 -m venv "$AGENT_PATH/.venv"
@@ -77,7 +78,8 @@ sudo cp -a "$IMG_ARTS_PATH/lib/." "/usr/local/lib/genesis/"
 sudo systemctl enable genesis-bootstrap genesis-root-autoresize genesis-universal-agent
 
 # Install Alloy
-wget -q https://github.com/grafana/alloy/releases/download/v${ALLOY_VERSION}/alloy-${ALLOY_VERSION}-1.amd64.deb
+wget -q https://repository.genesis-core.tech/alloy/alloy-${ALLOY_VERSION}-1.amd64.deb
+#wget -q https://github.com/grafana/alloy/releases/download/v${ALLOY_VERSION}/alloy-${ALLOY_VERSION}-1.amd64.deb
 sudo dpkg -i alloy-${ALLOY_VERSION}-1.amd64.deb
 rm -f alloy-${ALLOY_VERSION}-1.amd64.deb
 
