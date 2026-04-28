@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Copyright 2025 Genesis Corporation
+# Copyright 2025-2026 Genesis Corporation
 #
 # All Rights Reserved.
 #
@@ -92,6 +92,16 @@ sudo chpasswd < /tmp/__passwd
 rm -f /tmp/__passwd
 
 # Cleanup
+# remove old kernels, headers and modules, keep only the latest one
+LATEST_KERNEL_PKG=$(dpkg-query -W -f='${db:Status-Abbrev} ${Package}\n' 'linux-image-[0-9]*' 2>/dev/null | grep '^ii' | awk '{print $2}' | sort -V | tail -n 1 || true)
+if [ -n "$LATEST_KERNEL_PKG" ]; then
+    VERSION=$(echo "$LATEST_KERNEL_PKG" | sed 's/linux-image-//' | sed 's/-generic$//')
+    OLD_PKGS=$(dpkg-query -W -f='${db:Status-Abbrev} ${Package}\n' 'linux-image-[0-9]*' 'linux-headers-[0-9]*' 'linux-modules-[0-9]*' 'linux-modules-extra-[0-9]*' 2>/dev/null | grep '^ii' | awk '{print $2}' | grep -v "$VERSION" || true)
+    if [ -n "$OLD_PKGS" ]; then
+        sudo DEBIAN_FRONTEND=noninteractive apt-get autopurge -y $OLD_PKGS
+    fi
+fi
+sudo apt autopurge -y snapd libllvm19
 sudo rm -fr /opt/gci_base
 sudo apt-get clean
 sudo rm -rf /var/lib/apt/lists/*
