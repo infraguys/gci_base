@@ -390,3 +390,21 @@ setup_postgresql_user_and_db() {
         echo "PostgreSQL database $pg_db already exists."
     fi
 }
+
+wait_for_db() {
+    local attempt=1
+
+    echo "Waiting for database to be available (infinite wait)..."
+
+    while true; do
+        # Try to connect to database using psql
+        if PGPASSWORD="$GC_PG_PASS" psql -h "$GC_PG_ENDPOINTS" -U "$GC_PG_USER" -d "$GC_PG_DB" -c "SELECT 1;" >/dev/null 2>&1; then
+            echo "Database is available after $attempt attempts"
+            return 0
+        fi
+
+        echo "Attempt $attempt: Database not ready, waiting 5 seconds..."
+        sleep 5
+        attempt=$((attempt + 1))
+    done
+}
