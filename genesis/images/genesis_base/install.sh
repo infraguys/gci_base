@@ -34,7 +34,7 @@ ALLOY_VERSION="1.10.0"
 
 # Install packages
 sudo apt update
-
+sudo apt dist-upgrade -y
 sudo apt install -y build-essential python3.12-dev python3.12-venv \
     cloud-guest-utils irqbalance qemu-guest-agent libev-dev rsync parted j2cli
 
