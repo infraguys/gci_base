@@ -400,3 +400,28 @@ setup_postgresql_user_and_db() {
         echo "PostgreSQL database $pg_db already exists."
     fi
 }
+
+wait_for_db() {
+    local pg_user="$1"
+    local pg_pass="$2"
+    local pg_db="$3"
+    local endpoints="$4"
+    local max_attempts="${5:-600}"
+    local attempt=1
+
+    echo "Waiting for database to be available (max ${max_attempts} attempts)..."
+
+    while [ "$attempt" -le "$max_attempts" ]; do
+        # Try to connect to database using psql
+        if PGPASSWORD="$pg_pass" psql -h "$endpoints" -U "$pg_user" -d "$pg_db" -c "SELECT 1;" >/dev/null 2>&1; then
+            echo "Database is available after $attempt attempts"
+            return 0
+        fi
+
+        echo "Attempt $attempt: Database not ready, waiting 1 second..."
+        sleep 1
+        attempt=$((attempt + 1))
+    done
+    echo "ERROR: Database not available after $max_attempts attempts"
+    return 1
+}
