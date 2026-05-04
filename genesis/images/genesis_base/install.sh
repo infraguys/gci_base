@@ -32,6 +32,14 @@ DEV_MODE=$([ -d "$SDK_PATH" ] && echo "true" || echo "false")
 # Metrics and logs
 ALLOY_VERSION="1.10.0"
 
+if [ -f /etc/apt/sources.list.d/ubuntu.sources ]; then
+    sudo mv /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list.d/ubuntu.sources.bak
+fi
+if [ -f /etc/apt/sources.list ]; then
+    sudo mv /etc/apt/sources.list /etc/apt/sources.list.bak
+fi
+sudo cp "$IMG_ARTS_PATH/etc/apt/sources.list" /etc/apt/sources.list
+
 # Install packages
 sudo apt update
 sudo apt dist-upgrade -y
