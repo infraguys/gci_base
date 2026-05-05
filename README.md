@@ -10,7 +10,7 @@ The key features are:
 
 # 🛠️ Build
 
-You need [DevTools](https://github.com/exordos/exordos) to build the image. Look the the [install](https://github.com/exordos/exordos/blob/master/README.md#install) section for details.
+You need [DevTools](https://github.com/exordos/exordos) to build the image. Look at the [install](https://github.com/exordos/exordos/blob/master/README.md#install) section for details.
 
 
 Run the build command:
