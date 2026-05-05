@@ -22,7 +22,7 @@ set -o pipefail
 
 AGENT_PATH="/opt/universal_agent"
 IMG_ARTS_PATH="/opt/gci_base/genesis/images/exordos_base"
-WORK_DIR="/var/lib/genesis"
+WORK_DIR="/var/lib/exordos"
 SYSTEMD_SERVICE_DIR=/etc/systemd/system/
 
 PASSWD="${GEN_USER_PASSWD:-ubuntu}"
@@ -76,14 +76,14 @@ sudo ln -sf "$AGENT_PATH/.venv/bin/genesis-universal-agent" "/usr/bin/genesis-un
 sudo mkdir -p "$WORK_DIR/bootstrap/scripts/"
 sudo cp "$IMG_ARTS_PATH/bootstrap.sh" "$WORK_DIR/bootstrap/"
 sudo cp "$IMG_ARTS_PATH/root_autoresize.sh" "/usr/bin/"
-sudo cp "$IMG_ARTS_PATH/etc/systemd/genesis-bootstrap.service" $SYSTEMD_SERVICE_DIR
-sudo cp "$IMG_ARTS_PATH/etc/systemd/genesis-root-autoresize.service" $SYSTEMD_SERVICE_DIR
+sudo cp "$IMG_ARTS_PATH/etc/systemd/exordos-bootstrap.service" $SYSTEMD_SERVICE_DIR
+sudo cp "$IMG_ARTS_PATH/etc/systemd/exordos-root-autoresize.service" $SYSTEMD_SERVICE_DIR
 sudo cp "$IMG_ARTS_PATH/etc/systemd/genesis-universal-agent.service" $SYSTEMD_SERVICE_DIR
-sudo mkdir "/usr/local/lib/genesis/"
-sudo cp -a "$IMG_ARTS_PATH/lib/." "/usr/local/lib/genesis/"
+sudo mkdir -p "/usr/local/lib/exordos/"
+sudo cp -a "$IMG_ARTS_PATH/lib/." "/usr/local/lib/exordos/"
 
-# Enable genesis core services
-sudo systemctl enable genesis-bootstrap genesis-root-autoresize genesis-universal-agent
+# Enable exordos core services
+sudo systemctl enable exordos-bootstrap exordos-root-autoresize genesis-universal-agent
 
 # Install Alloy
 wget -q https://repository.genesis-core.tech/alloy/alloy-${ALLOY_VERSION}-1.amd64.deb

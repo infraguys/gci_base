@@ -1,22 +1,22 @@
-# Genesis Core Base Image
+# Exordos Core Base Image
 
-This is a base image for Genesis Core project. The image contains all necessary tools and libraries to be used in Genesis installations.
+This is a base image for Exordos Core project. The image contains all necessary tools and libraries to be used in Exordos installations.
 
 The key features are:
 
 - [Universal Agent](https://github.com/infraguys/gcl_sdk/wiki/universal_agent) service.
-- Genesis root autoresize service. Tries to perform resize of the root partition at every boot if it's possible.
-- Genesis bootstrap service. Runs the bootstrap scripts.
+- Exordos root autoresize service. Tries to perform resize of the root partition at every boot if it's possible.
+- Exordos bootstrap service. Runs the bootstrap scripts.
 
 # 🛠️ Build
 
-You need [DevTools](https://github.com/infraguys/genesis_devtools) to build the image. Look the the [install](https://github.com/infraguys/genesis_devtools?tab=readme-ov-file#install) section for details.
+You need [DevTools](https://github.com/exordos/exordos) to build the image. Look at the [install](https://github.com/exordos/exordos/blob/master/README.md#install) section for details.
 
 
 Run the build command:
 
 ```bash
-genesis build -i ~/.ssh/key.pub -f .
+exordos build -i ~/.ssh/key.pub -f .
 ```
 
 Where `~/.ssh/key.pub` is your public key for the image.
@@ -25,14 +25,14 @@ Also you may set the `GEN_USER_PASSWD` environment variable to change the defaul
 
 ```bash
 export GEN_USER_PASSWD=secret
-genesis build -i ~/.ssh/key.pub -f .
+exordos build -i ~/.ssh/key.pub -f .
 ```
 
 To build with local copy of the SDK, export the `LOCAL_GENESIS_SDK_PATH` environment variable:
 
 ```bash
 export LOCAL_GENESIS_SDK_PATH=/path/to/gcl_sdk
-genesis build -i ~/.ssh/key.pub -f .
+exordos build -i ~/.ssh/key.pub -f .
 ``` 
 
 # 🚀 Usage
@@ -51,10 +51,10 @@ curl --location 'http://10.20.0.2:11010/v1/nodes/' \
     "cores": 1,
     "ram": 1024,
     
-    "image": "http://10.20.0.1:8080/genesis-base.raw"
+    "image": "http://10.20.0.1:8080/exordos-base.raw"
 }'
 ```
 
 # 📃 Bootstrap scripts
 
-For next images in hierarchy you can add scripts that are executed at the very first boot of the node. Actually it can be any executable file and not only bash scripts. Put your scripts in the `/var/lib/genesis/bootstrap/scripts` directory and they will be executed in the order of the files in the directory.
+For next images in hierarchy you can add scripts that are executed at the very first boot of the node. Actually it can be any executable file and not only bash scripts. Put your scripts in the `/var/lib/exordos/bootstrap/scripts` directory and they will be executed in the order of the files in the directory.
