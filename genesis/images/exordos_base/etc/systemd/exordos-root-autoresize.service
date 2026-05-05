@@ -1,5 +1,5 @@
 [Unit]
-Description=Genesis root autoresize one shot unit
+Description=Exordos root autoresize one shot unit
 DefaultDependencies=no
 Conflicts=shutdown.target
 Before=local-fs.target shutdown.target

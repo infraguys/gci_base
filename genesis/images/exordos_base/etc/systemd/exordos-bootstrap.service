@@ -1,0 +1,13 @@
+[Unit]
+Description=Exordos Bootstrap one shot unit
+Wants=network-online.target
+After=network-online.target
+ConditionPathExists=!/var/lib/exordos/bootstrap/__done
+
+[Service]
+Type=oneshot
+ExecStart=/var/lib/exordos/bootstrap/bootstrap.sh
+WorkingDirectory=/var/lib/exordos/bootstrap
+
+[Install]
+WantedBy=multi-user.target

@@ -16,7 +16,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-WORK_DIR="/var/lib/genesis/bootstrap"
+WORK_DIR="/var/lib/exordos/bootstrap"
 DONE_PATH="$WORK_DIR/__done"
 BUILD_MAC="52:54:00:12:34:56"
 
