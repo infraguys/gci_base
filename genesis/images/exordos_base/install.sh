@@ -21,7 +21,7 @@ set -x
 set -o pipefail
 
 AGENT_PATH="/opt/universal_agent"
-IMG_ARTS_PATH="/opt/gci_base/genesis/images/genesis_base"
+IMG_ARTS_PATH="/opt/gci_base/genesis/images/exordos_base"
 WORK_DIR="/var/lib/genesis"
 SYSTEMD_SERVICE_DIR=/etc/systemd/system/
 

@@ -18,7 +18,7 @@ build:
   elements:
     # List of images in the element
     - images:
-      - name: genesis-base
+      - name: exordos-base
         format: qcow2
         envs:
           - GEN_USER_PASSWD
@@ -28,7 +28,7 @@ build:
         profile: ubuntu_24
 
         # Provisioning script
-        script: images/genesis_base/install.sh
+        script: images/exordos_base/install.sh
         
         # Override image build parameters, for instance Packer parameters
         override:

@@ -7,7 +7,7 @@ on:
     - cron: '0 1 * * 0'
 
 env:
-  PROJECT_NAME: genesis-base
+  PROJECT_NAME: exordos-base
   REPO_ENDPOINT_PUT: http://10.20.0.1:8082
 
 jobs:
@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 30
-      - name: Build Genesis Core
+      - name: Build Exordos Core
         run: |
           set -eux
           
@@ -31,20 +31,20 @@ jobs:
 
           # Prepare `raw` and `raw.gz` images
           cd output
-          qemu-img convert -f qcow2 genesis-base.qcow2 -O raw genesis-base.raw
-          gzip -5 -k < genesis-base.raw > genesis-base.raw.gz
+          qemu-img convert -f qcow2 exordos-base.qcow2 -O raw exordos-base.raw
+          gzip -5 -k < exordos-base.raw > exordos-base.raw.gz
 
           # Upload the VM images
-          curl -X PUT --upload-file genesis-base.qcow2 \
-            ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/${VERSION}/genesis-base.qcow2
-          curl -X PUT --upload-file genesis-base.raw.gz \
-            ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/${VERSION}/genesis-base.raw.gz
-          curl -X PUT --upload-file genesis-base.raw \
-            ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/${VERSION}/genesis-base.raw
+          curl -X PUT --upload-file exordos-base.qcow2 \
+            ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/${VERSION}/exordos-base.qcow2
+          curl -X PUT --upload-file exordos-base.raw.gz \
+            ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/${VERSION}/exordos-base.raw.gz
+          curl -X PUT --upload-file exordos-base.raw \
+            ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/${VERSION}/exordos-base.raw
 
-          sha256sum genesis-base.qcow2 >> SHA256SUMS
-          sha256sum genesis-base.raw.gz >> SHA256SUMS
-          sha256sum genesis-base.raw >> SHA256SUMS
+          sha256sum exordos-base.qcow2 >> SHA256SUMS
+          sha256sum exordos-base.raw.gz >> SHA256SUMS
+          sha256sum exordos-base.raw >> SHA256SUMS
 
           curl -X PUT --upload-file SHA256SUMS \
             ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/${VERSION}/SHA256SUMS
