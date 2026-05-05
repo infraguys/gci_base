@@ -79,7 +79,7 @@ sudo cp "$IMG_ARTS_PATH/root_autoresize.sh" "/usr/bin/"
 sudo cp "$IMG_ARTS_PATH/etc/systemd/exordos-bootstrap.service" $SYSTEMD_SERVICE_DIR
 sudo cp "$IMG_ARTS_PATH/etc/systemd/exordos-root-autoresize.service" $SYSTEMD_SERVICE_DIR
 sudo cp "$IMG_ARTS_PATH/etc/systemd/genesis-universal-agent.service" $SYSTEMD_SERVICE_DIR
-sudo mkdir "/usr/local/lib/exordos/"
+sudo mkdir -p "/usr/local/lib/exordos/"
 sudo cp -a "$IMG_ARTS_PATH/lib/." "/usr/local/lib/exordos/"
 
 # Enable exordos core services
