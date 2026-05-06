@@ -13,6 +13,7 @@ env:
 jobs:
   Build:
     runs-on: self-hosted
+    if : ${{ github.actor != 'dependabot[bot]' }}
     strategy:
       fail-fast: true
     steps:
@@ -48,4 +49,17 @@ jobs:
 
           curl -X PUT --upload-file SHA256SUMS \
             ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/${VERSION}/SHA256SUMS
+          
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            curl -X PUT --upload-file exordos-base.qcow2 \
+              ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/latest/exordos-base.qcow2
+            curl -X PUT --upload-file exordos-base.raw.gz \
+              ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/latest/exordos-base.raw.gz
+            curl -X PUT --upload-file exordos-base.raw \
+              ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/latest/exordos-base.raw
+            curl -X PUT --upload-file SHA256SUMS \
+              ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/latest/SHA256SUMS
+          fi
+          
+          
           cd -
