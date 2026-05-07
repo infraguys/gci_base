@@ -46,9 +46,11 @@ sudo apt dist-upgrade -y
 sudo apt install -y build-essential python3.12-dev python3.12-venv \
     cloud-guest-utils irqbalance qemu-guest-agent libev-dev rsync parted j2cli
 
-export UV_INSTALLER_GHE_BASE_URL=https://github.com
 export UV_INSTALL_DIR="/usr/local/bin"
-curl -LsSf https://github.com/astral-sh/uv/releases/download/0.11.7/uv-installer.sh | sh
+curl --fail --show-error --location --progress-bar https://repository.genesis-core.tech/uv/0.11.11/uv --output "${UV_INSTALL_DIR}/uv"
+chmod +x "${UV_INSTALL_DIR}/uv"
+#export UV_INSTALLER_GHE_BASE_URL=https://github.com
+#curl -LsSf https://github.com/astral-sh/uv/releases/download/0.11.7/uv-installer.sh | sh
 uv self version
 
 # Install the Core Agent
