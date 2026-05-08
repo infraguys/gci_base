@@ -9,4 +9,4 @@ help:
 	@echo "build            - build base image"
 
 build:
-	genesis build -i $(SSH_KEY) -f .
+	exordos build -i $(SSH_KEY) -f .

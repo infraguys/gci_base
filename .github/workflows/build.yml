@@ -25,10 +25,10 @@ jobs:
           set -eux
           
           source ~/.profile
-          genesis build $(pwd)
+          exordos build $(pwd)
 
           # Temporary upload step is done in the build script
-          VERSION="$(genesis --silent get-version .)"
+          VERSION="$(exordos --silent get-version .)"
 
           # Prepare `raw` and `raw.gz` images
           cd output
