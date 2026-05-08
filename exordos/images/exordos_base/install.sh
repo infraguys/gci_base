@@ -21,7 +21,7 @@ set -x
 set -o pipefail
 
 AGENT_PATH="/opt/universal_agent"
-IMG_ARTS_PATH="/opt/gci_base/genesis/images/exordos_base"
+IMG_ARTS_PATH="/opt/eci_base/exordos/images/exordos_base"
 WORK_DIR="/var/lib/exordos"
 SYSTEMD_SERVICE_DIR=/etc/systemd/system/
 
@@ -61,7 +61,7 @@ python3 -m venv "$AGENT_PATH/.venv"
 source "$AGENT_PATH"/.venv/bin/activate
 pip install pip --upgrade
 
-# In the dev mode the genesis_core package is installed from the local machine
+# In the dev mode the exordos_core package is installed from the local machine
 if [[ "$DEV_MODE" == "true" ]]; then
     pip install -r "$SDK_PATH"/requirements.txt
     pip install -e "$SDK_PATH"
@@ -70,8 +70,8 @@ else
     pip install gcl-sdk=="$GEN_SDK_VERSION"
 fi
 
-sudo cp -r "$IMG_ARTS_PATH/etc/genesis_universal_agent" /etc/
-sudo ln -sf "$AGENT_PATH/.venv/bin/genesis-universal-agent" "/usr/bin/genesis-universal-agent"
+sudo cp -r "$IMG_ARTS_PATH/etc/exordos_universal_agent" /etc/
+sudo ln -sf "$AGENT_PATH/.venv/bin/genesis-universal-agent" "/usr/bin/exordos-universal-agent"
 
 
 # Install stuff for bootstrap procedure and systemd services
@@ -80,12 +80,12 @@ sudo cp "$IMG_ARTS_PATH/bootstrap.sh" "$WORK_DIR/bootstrap/"
 sudo cp "$IMG_ARTS_PATH/root_autoresize.sh" "/usr/bin/"
 sudo cp "$IMG_ARTS_PATH/etc/systemd/exordos-bootstrap.service" $SYSTEMD_SERVICE_DIR
 sudo cp "$IMG_ARTS_PATH/etc/systemd/exordos-root-autoresize.service" $SYSTEMD_SERVICE_DIR
-sudo cp "$IMG_ARTS_PATH/etc/systemd/genesis-universal-agent.service" $SYSTEMD_SERVICE_DIR
+sudo cp "$IMG_ARTS_PATH/etc/systemd/exordos-universal-agent.service" $SYSTEMD_SERVICE_DIR
 sudo mkdir -p "/usr/local/lib/exordos/"
 sudo cp -a "$IMG_ARTS_PATH/lib/." "/usr/local/lib/exordos/"
 
 # Enable exordos core services
-sudo systemctl enable exordos-bootstrap exordos-root-autoresize genesis-universal-agent
+sudo systemctl enable exordos-bootstrap exordos-root-autoresize exordos-universal-agent
 
 # Install Alloy
 wget -q https://repository.genesis-core.tech/alloy/alloy-${ALLOY_VERSION}-1.amd64.deb
@@ -112,7 +112,7 @@ if [ -n "$LATEST_KERNEL_PKG" ]; then
     fi
 fi
 sudo apt autopurge -y snapd libllvm19
-sudo rm -fr /opt/gci_base
+sudo rm -fr /opt/eci_base
 sudo apt-get clean
 sudo rm -rf /var/lib/apt/lists/*
 sudo rm -rf /tmp/*

@@ -1,12 +1,12 @@
 # Build section. It specifies the build process of the project
 build:
-  
+
   # Dependencies of the project
   deps:
-    - dst: /opt/gci_base
+    - dst: /opt/eci_base
       # Local path
       path:
-        src: ../../gci_base
+        src: ../../eci_base
 
     # Take SDK from a local path for development purposes.
     - dst: /opt/gcl_sdk
@@ -23,13 +23,13 @@ build:
         envs:
           - GEN_USER_PASSWD
           - GEN_SDK_VERSION=2.0.0
-        
+
         # OS profile for the image
         profile: ubuntu_24
 
         # Provisioning script
         script: images/exordos_base/install.sh
-        
+
         # Override image build parameters, for instance Packer parameters
         override:
           disk_size: "6G"
