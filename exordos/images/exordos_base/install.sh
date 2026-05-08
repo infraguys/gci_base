@@ -72,6 +72,8 @@ fi
 
 sudo cp -r "$IMG_ARTS_PATH/etc/exordos_universal_agent" /etc/
 sudo ln -sf "$AGENT_PATH/.venv/bin/genesis-universal-agent" "/usr/bin/exordos-universal-agent"
+# Keep legacy symlink for backward compatibility
+sudo ln -sf "$AGENT_PATH/.venv/bin/genesis-universal-agent" "/usr/bin/genesis-universal-agent"
 
 
 # Install stuff for bootstrap procedure and systemd services
