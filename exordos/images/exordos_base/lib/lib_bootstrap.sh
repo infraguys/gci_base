@@ -140,6 +140,7 @@ wait_for_mount() {
 prepare_persistent_disk() {
     local persistent_disk="$1"
     local mount_point="$2"
+    local fstype="${3:-ext4}"
 
     if [[ -z "$persistent_disk" ]]; then
         echo "WARNING: No persistent disk found. Using root filesystem."
@@ -161,7 +162,7 @@ prepare_persistent_disk() {
         # Disk is not partitioned, create GPT partition table and partition
         create_gpt_partition "$persistent_disk"
         echo "Formatting persistent partition $partition..."
-        mkfs.ext4 -F "$partition"
+        mkfs."$fstype" "$partition"
     fi
 
     if ! is_disk_mounted "$partition"; then
@@ -169,7 +170,7 @@ prepare_persistent_disk() {
             echo "Persistent partition $partition already formatted."
         else
             echo "Formatting persistent partition $partition..."
-            mkfs.ext4 "$partition"
+            mkfs."$fstype" "$partition"
         fi
 
         echo "Mounting persistent partition $partition to $mount_point..."
@@ -182,10 +183,10 @@ prepare_persistent_disk() {
     if [[ -n "$part_uuid" ]]; then
         if grep -q "$mount_point" /etc/fstab; then
             # Replace existing entry
-            sed -i "s|^.*[[:space:]]${mount_point}[[:space:]].*|UUID=$part_uuid $mount_point ext4 defaults 0 2|" /etc/fstab
+            sed -i "s|^.*[[:space:]]${mount_point}[[:space:]].*|UUID=$part_uuid $mount_point auto defaults 0 2|" /etc/fstab
             echo "Updated persistent partition entry in /etc/fstab"
         else
-            echo "UUID=$part_uuid $mount_point ext4 defaults 0 2" >> /etc/fstab
+            echo "UUID=$part_uuid $mount_point auto defaults 0 2" >> /etc/fstab
             echo "Added persistent partition to /etc/fstab"
         fi
     fi
