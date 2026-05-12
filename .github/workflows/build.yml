@@ -23,8 +23,7 @@ jobs:
       - name: Build Exordos Core
         run: |
           set -eux
-          
-          source ~/.profile
+
           exordos build $(pwd)
 
           # Temporary upload step is done in the build script
@@ -49,7 +48,7 @@ jobs:
 
           curl -X PUT --upload-file SHA256SUMS \
             ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/${VERSION}/SHA256SUMS
-          
+
           if [[ $GITHUB_REF == refs/tags/* ]]; then
             curl -X PUT --upload-file exordos-base.qcow2 \
               ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/latest/exordos-base.qcow2
@@ -60,6 +59,6 @@ jobs:
             curl -X PUT --upload-file SHA256SUMS \
               ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/latest/SHA256SUMS
           fi
-          
-          
+
+
           cd -
