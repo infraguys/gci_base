@@ -39,11 +39,12 @@ if [ -f /etc/apt/sources.list ]; then
     sudo mv /etc/apt/sources.list /etc/apt/sources.list.bak
 fi
 sudo cp "$IMG_ARTS_PATH/etc/apt/sources.list" /etc/apt/sources.list
+sudo sed -i "s/release/$(lsb_release -cs)/g" /etc/apt/sources.list
 
 # Install packages
 sudo apt update
 sudo apt dist-upgrade -y
-sudo apt install -y build-essential python3.12-dev python3.12-venv \
+sudo apt install -y build-essential python3-dev python3-venv \
     cloud-guest-utils irqbalance qemu-guest-agent libev-dev rsync parted j2cli
 
 export UV_INSTALL_DIR="/usr/local/bin"
