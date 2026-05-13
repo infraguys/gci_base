@@ -293,6 +293,15 @@ migrate_to_persistent_stop_start() {
         done
     fi
 
+    if [[ -n "$services" ]]; then
+        for service in $services; do
+            while systemctl is-active --quiet "$service"; do
+                echo "$service is still active, waiting..."
+                sleep 0.1
+            done
+        done
+    fi
+
     migrate_to_persistent $old_data_dir $persistent_dir
 
     # Start services again
