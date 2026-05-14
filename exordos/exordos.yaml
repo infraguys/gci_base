@@ -19,13 +19,13 @@ build:
     # List of images in the element
     - images:
       - name: exordos-base
-        format: qcow2
+        format: GEN_IMG_FORMAT=qcow2
         envs:
           - GEN_USER_PASSWD
           - GEN_SDK_VERSION=2.0.0
 
         # OS profile for the image
-        profile: ubuntu_24
+        profile: ubuntu_26
 
         # Provisioning script
         script: images/exordos_base/install.sh
