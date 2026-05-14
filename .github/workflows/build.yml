@@ -24,17 +24,16 @@ jobs:
         run: |
           set -eux
 
-          exordos build $(pwd)
+          # Build in all image formats
+          export GEN_IMG_FORMAT=qcow2,gz,raw
+          
+          exordos build --only-images $(pwd)
 
           # Temporary upload step is done in the build script
           VERSION="$(exordos --silent get-version .)"
 
-          # Prepare `raw` and `raw.gz` images
-          cd output
-          qemu-img convert -f qcow2 exordos-base.qcow2 -O raw exordos-base.raw
-          gzip -5 -k < exordos-base.raw > exordos-base.raw.gz
-
           # Upload the VM images
+          cd output
           curl -X PUT --upload-file exordos-base.qcow2 \
             ${REPO_ENDPOINT_PUT}/${PROJECT_NAME}/${VERSION}/exordos-base.qcow2
           curl -X PUT --upload-file exordos-base.raw.gz \
